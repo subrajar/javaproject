@@ -7,7 +7,6 @@ public class Service {
 	public static Connection connect() {
 		Connection con = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/zbook", "root", "subraja");
 
 		} catch (Exception e) {
@@ -37,16 +36,17 @@ public class Service {
 
 	}
 
-	public static void addPost(String userId, String postId, String postTag, String post, int likes) {
+	public static void addPost(String userId, String postId, String postTag, String post, int likes, String postDate) {
 		try {
 			Connection con = connect();
-			String query = "insert into post values(?,?,?,?,?)";
+			String query = "insert into post values(?,?,?,?,?,?)";
 			PreparedStatement st = con.prepareStatement(query);
 			st.setString(1, userId);
 			st.setString(2, postId);
 			st.setString(3, postTag);
 			st.setString(4, post);
 			st.setInt(5, likes);
+			st.setString(6, postDate);
 			int row = st.executeUpdate();
 			System.out.println(row + " row affected");
 			closeConnection(con);
@@ -58,12 +58,12 @@ public class Service {
 
 	public static void displayUsers(String userId) throws Exception {
 		Connection con = connect();
-		String query = "select userid from users where not userid=" + userId;
+		String query = "select * from users where not userid='" + userId + "'";
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		String userIds = "";
 		while (rs.next()) {
-			userIds = rs.getString(2);
+			userIds = "userId: " + rs.getString("userid") + "\tName: " + rs.getString("username");
 			System.out.println(userIds);
 		}
 		closeConnection(con);
@@ -88,13 +88,10 @@ public class Service {
 
 	public static void addFriendToFriend(String friendUserId, String userId) throws Exception {
 		Connection con = connect();
-		String query = "select userid from friends where user_id=" + friendUserId + "and friendid=" + userId;
+		String query = "select user_id from friends where user_id='" + friendUserId + "'and friendid='" + userId + "'";
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery(query);
-		String friendId = "";
-		rs.next();
-		friendId = rs.getString(2);
-		if (friendId.equals("")) {
+		if (!rs.next()) {
 			addFriend(friendUserId, userId);
 		}
 		closeConnection(con);
@@ -103,18 +100,19 @@ public class Service {
 
 	public static void displayPost() throws Exception {
 		Connection con = connect();
-		String query = "select * from post ";
+		String query = "select * from post order by postdate desc limit 10 ";
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery(query);
 		String userIds = "";
 		int cnt = 1;
+		System.out.println("Recent 10 post:");
 		while (rs.next()) {
-			userIds = "post" + cnt + ":" + rs.getString(1) + "," + rs.getString(2) + "," + rs.getString(3) + ","
-					+ rs.getString(4) + "," + rs.getInt(5);
+			userIds = "post" + cnt + ":\nUserId:" + rs.getString(1) + "\nPostId:" + rs.getString(2) + "\nPostTag:"
+					+ rs.getString(3) + "\nPost:" + rs.getString(4) + "\nLikes:" + rs.getInt(5) + "\nDate:"
+					+ rs.getString(6);
 			System.out.println(userIds);
 			cnt++;
 		}
-		System.out.println("\n\n");
 		closeConnection(con);
 
 	}
@@ -136,6 +134,21 @@ public class Service {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
+
+	}
+
+	public static void displayFriends(String userId) throws Exception {
+		Connection con = connect();
+		String query = "select friendid from friends where user_id='" + userId + "'";
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery(query);
+		String friendIds = "";
+		while (rs.next()) {
+			friendIds = rs.getString("friendid");
+			System.out.println(friendIds);
+
+		}
+		closeConnection(con);
 
 	}
 
