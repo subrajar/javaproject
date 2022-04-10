@@ -9,7 +9,8 @@ public class Client {
 		int value;
 		String loopVariable = "yes";
 		while (loopVariable.equals("yes")) {
-			System.out.println("1.Add username\n2.add post\n3.Add friends\n4.Display post\n5.like post");
+			System.out.println(
+					"1.Add username\n2.Add post\n3.Add friends\n4.Display recent 10 post\n5.Like post\n6.Display friends");
 			value = sc.nextInt();
 			sc.nextLine();
 			switch (value) {
@@ -31,7 +32,9 @@ public class Client {
 				String postTag = sc.nextLine();
 				System.out.println("enter post:");
 				String post = sc.nextLine();
-				Service.addPost(userId, postId, postTag, post, 0);
+				System.out.println("enter date:");
+				String postDate = sc.nextLine();
+				Service.addPost(userId, postId, postTag, post, 0, postDate);
 				break;
 			case 3:
 				System.out.println("enter your userid");
@@ -66,6 +69,15 @@ public class Client {
 				System.out.println("enter the postid:");
 				String postid = sc.nextLine();
 				Service.likePost(postid);
+				break;
+			case 6:
+				System.out.println("enter userId:");
+				userId = sc.nextLine();
+				try {
+					Service.displayFriends(userId);
+				} catch (Exception e) {
+					System.out.println(e);
+				}
 				break;
 			}
 			System.out.println("Do you want to show the menu again?");
