@@ -9,7 +9,8 @@ public class Client {
 		int value;
 		String loopVariable = "yes";
 		while (loopVariable.equals("yes")) {
-			System.out.println("1.Add username\n2.Add post\n3.Add friends\n4.Display recent 10 post\n5.Like post\n6.Display friends");
+			System.out.println(
+					"1.Add username\n2.Add post\n3.Add friends\n4.Display recent 10 post\n5.Like post\n6.Display friends");
 			value = sc.nextInt();
 			sc.nextLine();
 			switch (value) {
@@ -53,15 +54,19 @@ public class Client {
 				}
 				break;
 			case 4:
+				System.out.println("Enter userid:");
+				userId = sc.nextLine();
 				try {
-					Service.displayPost();
+					Service.displayPost(userId);
 				} catch (Exception e) {
 					System.out.println(e);
 				}
 				break;
 			case 5:
+				System.out.println("Enter userid:");
+				userId = sc.nextLine();
 				try {
-					Service.displayPost();
+					Service.displayPost(userId);
 				} catch (Exception e) {
 					System.out.println(e);
 				}
