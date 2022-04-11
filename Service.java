@@ -1,6 +1,7 @@
 package zacebook1;
 
 import java.sql.*;
+import java.util.*;
 
 public class Service {
 
@@ -98,20 +99,29 @@ public class Service {
 
 	}
 
-	public static void displayPost() throws Exception {
+	public static void displayPost(String userId) throws Exception {
 		Connection con = connect();
-		String query = "select * from post order by postdate desc limit 10 ";
+		ArrayList<String> friendList = new ArrayList<>();
+		String query = "select friendid from friends where user_id='" + userId + "'";
 		Statement st = con.createStatement();
 		ResultSet rs = st.executeQuery(query);
-		String userIds = "";
-		int cnt = 1;
-		System.out.println("Recent 10 post:");
 		while (rs.next()) {
-			userIds = "post" + cnt + ":\nUserId:" + rs.getString(1) + "\nPostId:" + rs.getString(2) + "\nPostTag:"
-					+ rs.getString(3) + "\nPost:" + rs.getString(4) + "\nLikes:" + rs.getInt(5) + "\nDate:"
-					+ rs.getString(6);
-			System.out.println(userIds);
-			cnt++;
+			friendList.add(rs.getString("friendid"));
+		}
+		for (int i = 0; i < friendList.size(); i++) {
+			query = "select * from post where userid='" + friendList.get(i) + "'order by postdate desc limit 10 ";
+			Statement st1 = con.createStatement();
+			ResultSet rs1 = st1.executeQuery(query);
+			String userIds = "";
+			int cnt = 1;
+			System.out.println("Recent 10 post:");
+			while (rs1.next()) {
+				userIds = "post" + cnt + ":\nUserId:" + rs1.getString(1) + "\nPostId:" + rs1.getString(2) + "\nPostTag:"
+						+ rs1.getString(3) + "\nPost:" + rs1.getString(4) + "\nLikes:" + rs1.getInt(5) + "\nDate:"
+						+ rs1.getString(6);
+				System.out.println(userIds);
+				cnt++;
+			}
 		}
 		closeConnection(con);
 
