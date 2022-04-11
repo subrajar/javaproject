@@ -9,8 +9,7 @@ public class Client {
 		int value;
 		String loopVariable = "yes";
 		while (loopVariable.equals("yes")) {
-			System.out.println(
-					"1.Add username\n2.Add post\n3.Add friends\n4.Display recent 10 post\n5.Like post\n6.Display friends");
+			System.out.println("1.Add username\n2.Add post\n3.Add friends\n4.Display recent 10 post\n5.Like post\n6.Display friends");
 			value = sc.nextInt();
 			sc.nextLine();
 			switch (value) {
